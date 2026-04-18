@@ -34,6 +34,16 @@ const closePopup = document.querySelector(".popup__close");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileForm = document.querySelector("#edit-profile-form");
+const cardTemplate = document.querySelector("#card__template").content;
+const cardsList = document.querySelector(".cards__list");
+
+//Criando popup para adicionar novas cartas
+const openAddButton = document.querySelector(".profile__add-button");
+const openAddPopup = document.querySelector("#new-card-popup");
+const closeAddPopup = openAddPopup.querySelector(".popup__close");
+const nameCard = document.querySelector(".popup__input_type_card-name");
+const linkCard = document.querySelector(".popup__input_type_url");
+const addCardForm = document.querySelector("#new-card-form");
 
 function fillProfileForm(profileData) {
   const nameInput = document.querySelector(".popup__input_type_name");
@@ -69,3 +79,48 @@ openEditButton.addEventListener("click", handleOpenEditModal);
 closePopup.addEventListener("click", () => {
   openPopup.classList.remove("popup_is-opened");
 });
+
+function getCardElement(
+  name = "Lugar sem nome",
+  link = "./images/placeholder.jpg",
+) {
+  const cardElement = cardTemplate.cloneNode(true);
+  const cardTitle = cardElement.querySelector(".card__title");
+  const cardImage = cardElement.querySelector(".card__image");
+  cardTitle.textContent = name;
+  cardImage.src = link;
+  cardImage.alt = name;
+
+  return cardElement;
+}
+
+function renderCard(name, link, container) {
+  const cardElement = getCardElement(name, link, container);
+  container.append(cardElement);
+  return cardElement;
+}
+
+initialCards.forEach((card) => {
+  renderCard(card.name, card.link, cardsList);
+});
+
+// Adicionando funcionalidade para abrir o popup de adicionar nova carta
+
+openAddButton.addEventListener("click", () => {
+  openAddPopup.classList.add("popup_is-opened");
+});
+closeAddPopup.addEventListener("click", () => {
+  openAddPopup.classList.remove("popup_is-opened");
+});
+
+function handleCardFormSubmit(event) {
+  event.preventDefault();
+  const nameCard = document.querySelector(".popup__input_type_card-name");
+  const linkCard = document.querySelector(".popup__input_type_url");
+
+  renderCard(nameCard.value, linkCard.value, cardsList);
+  openAddPopup.classList.remove("popup_is-opened");
+  addCardForm.reset();
+}
+
+addCardForm.addEventListener("submit", handleCardFormSubmit);
