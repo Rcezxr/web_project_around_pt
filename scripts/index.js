@@ -89,12 +89,19 @@ function getCardElement(
   const cardImage = cardElement.querySelector(".card__image");
   //funcionalidade para like
   const clickLike = cardElement.querySelector(".card__like-button");
+  //funcionalidade para deletar o card
+  const deleteCard = cardElement.querySelector(".card__delete-button");
+  const cardLi = cardElement.querySelector(".card");
   cardTitle.textContent = name;
   cardImage.src = link;
   cardImage.alt = name;
 
   clickLike.addEventListener("click", () => {
     clickLike.classList.toggle("card__like-button_is-active");
+  });
+
+  deleteCard.addEventListener("click", () => {
+    cardLi.remove();
   });
 
   return cardElement;
@@ -130,5 +137,3 @@ function handleCardFormSubmit(event) {
 }
 
 addCardForm.addEventListener("submit", handleCardFormSubmit);
-
-//implementando like button
