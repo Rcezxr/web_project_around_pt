@@ -45,6 +45,13 @@ const nameCard = document.querySelector(".popup__input_type_card-name");
 const linkCard = document.querySelector(".popup__input_type_url");
 const addCardForm = document.querySelector("#new-card-form");
 
+//abrindo imagem
+const openImg = document.querySelector("#image-popup");
+const contentImg = openImg.querySelector(".popup__content_content_image");
+const popupCaption = openImg.querySelector(".popup__caption");
+const popupImg = openImg.querySelector(".popup__image");
+const closeImg = openImg.querySelector(".popup__close");
+
 function fillProfileForm(profileData) {
   const nameInput = document.querySelector(".popup__input_type_name");
   const descriptionInput = document.querySelector(
@@ -80,6 +87,10 @@ closePopup.addEventListener("click", () => {
   openPopup.classList.remove("popup_is-opened");
 });
 
+closeImg.addEventListener("click", () => {
+  openImg.classList.remove("popup_is-opened");
+});
+
 function getCardElement(
   name = "Lugar sem nome",
   link = "./images/placeholder.jpg",
@@ -92,6 +103,8 @@ function getCardElement(
   //funcionalidade para deletar o card
   const deleteCard = cardElement.querySelector(".card__delete-button");
   const cardLi = cardElement.querySelector(".card");
+  //abrindo imagem
+
   cardTitle.textContent = name;
   cardImage.src = link;
   cardImage.alt = name;
@@ -102,6 +115,13 @@ function getCardElement(
 
   deleteCard.addEventListener("click", () => {
     cardLi.remove();
+  });
+
+  cardImage.addEventListener("click", () => {
+    popupCaption.textContent = name;
+    popupImg.src = link;
+    popupImg.alt = name;
+    openImg.classList.add("popup_is-opened");
   });
 
   return cardElement;
