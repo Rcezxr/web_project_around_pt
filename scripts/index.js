@@ -87,9 +87,15 @@ function getCardElement(
   const cardElement = cardTemplate.cloneNode(true);
   const cardTitle = cardElement.querySelector(".card__title");
   const cardImage = cardElement.querySelector(".card__image");
+  //funcionalidade para like
+  const clickLike = cardElement.querySelector(".card__like-button");
   cardTitle.textContent = name;
   cardImage.src = link;
   cardImage.alt = name;
+
+  clickLike.addEventListener("click", () => {
+    clickLike.classList.toggle("card__like-button_is-active");
+  });
 
   return cardElement;
 }
@@ -124,3 +130,5 @@ function handleCardFormSubmit(event) {
 }
 
 addCardForm.addEventListener("submit", handleCardFormSubmit);
+
+//implementando like button
