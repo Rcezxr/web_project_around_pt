@@ -129,7 +129,7 @@ function getCardElement(
 
 function renderCard(name, link, container) {
   const cardElement = getCardElement(name, link, container);
-  container.append(cardElement);
+  container.prepend(cardElement);
   return cardElement;
 }
 
