@@ -27,7 +27,7 @@ const initialCards = [
 initialCards.forEach((card) => {
   console.log(card.name);
 });
-
+const popups = document.querySelectorAll(".popup");
 const openEditButton = document.querySelector(".profile__edit-button");
 const openPopup = document.querySelector("#edit-popup");
 const closePopup = document.querySelector(".popup__close");
@@ -52,6 +52,50 @@ const popupCaption = openImg.querySelector(".popup__caption");
 const popupImg = openImg.querySelector(".popup__image");
 const closeImg = openImg.querySelector(".popup__close");
 
+//save button do perfil
+const saveButton = document.querySelector(".popup__button");
+const nameInput = document.querySelector(".popup__input_type_name");
+const descriptionInput = document.querySelector(
+  ".popup__input_type_description",
+);
+const nameError = document.querySelector("#name-error");
+const descriptionError = document.querySelector("#description-error");
+
+//save button do new card
+const saveCardButton = document.querySelector(".popup__button_type_new-card");
+const newCardNameInput = document.querySelector(".popup__input_type_card-name");
+const newCardLinkInput = document.querySelector(".popup__input_type_url");
+const newCardNameError = document.querySelector("#card-name-error");
+const newCardLinkError = document.querySelector("#link-error");
+
+nameInput.addEventListener("input", () => {
+  checkInputValidity(nameInput, nameError);
+  saveButton.disabled = !(
+    nameInput.validity.valid && descriptionInput.validity.valid
+  );
+});
+
+descriptionInput.addEventListener("input", () => {
+  checkInputValidity(descriptionInput, descriptionError);
+  saveButton.disabled = !(
+    nameInput.validity.valid && descriptionInput.validity.valid
+  );
+});
+
+newCardNameInput.addEventListener("input", () => {
+  checkInputValidity(newCardNameInput, newCardNameError);
+  saveCardButton.disabled = !(
+    newCardNameInput.validity.valid && newCardLinkInput.validity.valid
+  );
+});
+
+newCardLinkInput.addEventListener("input", () => {
+  checkInputValidity(newCardLinkInput, newCardLinkError);
+  saveCardButton.disabled = !(
+    newCardNameInput.validity.valid && newCardLinkInput.validity.valid
+  );
+});
+
 function fillProfileForm(profileData) {
   const nameInput = document.querySelector(".popup__input_type_name");
   const descriptionInput = document.querySelector(
@@ -70,6 +114,26 @@ function handleOpenEditModal() {
   openPopup.classList.add("popup_is-opened");
 }
 
+function checkInputValidity(input, errorSpan) {
+  if (input.validity.valueMissing) {
+    if (input.type === "url") {
+      errorSpan.textContent = "insira uma url válida.";
+    } else {
+      errorSpan.textContent = "por favor, preencha este campo.";
+    }
+  } else if (input.validity.tooShort) {
+    errorSpan.textContent = `Aumente o texto para pelo menos ${input.minLength} caracteres ou mais.`;
+  } else if (input.validity.typeMismatch) {
+    errorSpan.textContent = "insira uma url válida.";
+  } else {
+    errorSpan.textContent = "";
+  }
+  if (input.validity.valid) {
+    input.classList.remove("popup__input_error");
+  } else {
+    input.classList.add("popup__input_error");
+  }
+}
 profileForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const nameInput = document.querySelector(".popup__input_type_name");
@@ -91,6 +155,23 @@ closeImg.addEventListener("click", () => {
   openImg.classList.remove("popup_is-opened");
 });
 
+popups.forEach((popup) => {
+  popup.addEventListener("click", (event) => {
+    if (event.target === popup) {
+      popup.classList.remove("popup_is-opened");
+    }
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    const openedPopup = document.querySelector(".popup_is-opened");
+    if (openedPopup) {
+      openedPopup.classList.remove("popup_is-opened");
+    }
+  }
+});
+
 function getCardElement(
   name = "Lugar sem nome",
   link = "./images/placeholder.jpg",
@@ -103,7 +184,6 @@ function getCardElement(
   //funcionalidade para deletar o card
   const deleteCard = cardElement.querySelector(".card__delete-button");
   const cardLi = cardElement.querySelector(".card");
-  //abrindo imagem
 
   cardTitle.textContent = name;
   cardImage.src = link;

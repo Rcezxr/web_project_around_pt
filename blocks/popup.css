@@ -31,6 +31,21 @@
   cursor: pointer;
 }
 
+.popup__button:disabled {
+  background-color: transparent;
+  border: 1px solid #000;
+  color: #000;
+  cursor: default;
+  box-sizing: border-box;
+}
+.popup__error {
+  color: red;
+  font-size: 12px;
+  line-height: 15px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  display: block;
+}
 .popup__close {
   width: 35px;
   height: 35px;
@@ -74,6 +89,9 @@
   box-sizing: border-box;
   padding: 10px 0 0;
   margin-bottom: 10px;
+}
+.popup__input_error {
+  border-color: red;
 }
 
 .popup__input:last-of-type {

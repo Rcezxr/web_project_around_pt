@@ -59,7 +59,7 @@
         </template>
       </main>
       <footer class="footer page__section">
-        <p class="footer__copyright">© 2025 Around The U.S.</p>
+        <p class="footer__copyright">© Ryan Cezar</p>
       </footer>
       <div class="popup" id="edit-popup">
         <div class="popup__content">
@@ -74,15 +74,25 @@
               class="popup__input popup__input_type_name"
               name="name"
               placeholder="Nome"
+              required
+              minlength="2"
+              maxlength="40"
               type="text"
             />
+            <span class="popup__error" id="name-error"></span>
             <input
               class="popup__input popup__input_type_description"
               name="description"
               placeholder="Sobre mim"
+              required
+              minlength="2"
+              maxlength="200"
               type="text"
             />
-            <button class="button popup__button" type="submit">Salvar</button>
+            <span class="popup__error" id="description-error"></span>
+            <button class="button popup__button" type="submit" disabled>
+              Salvar
+            </button>
           </form>
         </div>
       </div>
@@ -100,15 +110,20 @@
               name="place-name"
               placeholder="Título"
               required
+              minlength="2"
+              maxlength="40"
               type="text"
             />
+            <span class="popup__error" id="card-name-error"></span>
             <input
               class="popup__input popup__input_type_url"
               name="link"
               placeholder="Link de Imagem"
               required
+              maxlength="200"
               type="url"
             />
+            <span class="popup__error" id="link-error"></span>
             <button class="button popup__button" type="submit">Criar</button>
           </form>
         </div>
