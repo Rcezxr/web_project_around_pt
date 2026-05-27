@@ -24,9 +24,7 @@ const initialCards = [
     link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
   },
 ];
-initialCards.forEach((card) => {
-  console.log(card.name);
-});
+
 const popups = document.querySelectorAll(".popup");
 const openEditButton = document.querySelector(".profile__edit-button");
 const openPopup = document.querySelector("#edit-popup");
@@ -111,6 +109,7 @@ function handleOpenEditModal() {
     description: profileDescription.textContent,
   };
   fillProfileForm(profileData);
+  resetProfileFormErrors();
   openPopup.classList.add("popup_is-opened");
 }
 
@@ -149,6 +148,7 @@ openEditButton.addEventListener("click", handleOpenEditModal);
 
 closePopup.addEventListener("click", () => {
   openPopup.classList.remove("popup_is-opened");
+  resetProfileFormErrors();
 });
 
 closeImg.addEventListener("click", () => {
@@ -159,6 +159,9 @@ popups.forEach((popup) => {
   popup.addEventListener("click", (event) => {
     if (event.target === popup) {
       popup.classList.remove("popup_is-opened");
+      addCardForm.reset();
+      resetFormErrors();
+      resetProfileFormErrors();
     }
   });
 });
@@ -168,9 +171,29 @@ document.addEventListener("keydown", (event) => {
     const openedPopup = document.querySelector(".popup_is-opened");
     if (openedPopup) {
       openedPopup.classList.remove("popup_is-opened");
+      addCardForm.reset();
+      resetFormErrors();
+      resetProfileFormErrors();
     }
   }
 });
+function resetFormErrors() {
+  newCardNameError.textContent = "";
+  newCardLinkError.textContent = "";
+  newCardNameInput.classList.remove("popup__input_error");
+  newCardLinkInput.classList.remove("popup__input_error");
+  saveCardButton.disabled = true;
+}
+
+function resetProfileFormErrors() {
+  nameError.textContent = "";
+  descriptionError.textContent = "";
+  nameInput.classList.remove("popup__input_error");
+  descriptionInput.classList.remove("popup__input_error");
+  saveButton.disabled = !(
+    nameInput.validity.valid && descriptionInput.validity.valid
+  );
+}
 
 function getCardElement(
   name = "Lugar sem nome",
@@ -224,6 +247,8 @@ openAddButton.addEventListener("click", () => {
 });
 closeAddPopup.addEventListener("click", () => {
   openAddPopup.classList.remove("popup_is-opened");
+  addCardForm.reset();
+  resetFormErrors();
 });
 
 function handleCardFormSubmit(event) {
@@ -234,6 +259,7 @@ function handleCardFormSubmit(event) {
   renderCard(nameCard.value, linkCard.value, cardsList);
   openAddPopup.classList.remove("popup_is-opened");
   addCardForm.reset();
+  resetFormErrors();
 }
 
 addCardForm.addEventListener("submit", handleCardFormSubmit);
