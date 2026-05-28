@@ -60,38 +60,34 @@ const nameError = document.querySelector("#name-error");
 const descriptionError = document.querySelector("#description-error");
 
 //save button do new card
-const saveCardButton = document.querySelector(".popup__button_type_new-card");
+const saveCardButton = addCardForm.querySelector(".popup__button");
 const newCardNameInput = document.querySelector(".popup__input_type_card-name");
 const newCardLinkInput = document.querySelector(".popup__input_type_url");
 const newCardNameError = document.querySelector("#card-name-error");
 const newCardLinkError = document.querySelector("#link-error");
 
-nameInput.addEventListener("input", () => {
-  checkInputValidity(nameInput, nameError);
-  saveButton.disabled = !(
-    nameInput.validity.valid && descriptionInput.validity.valid
-  );
-});
+const allInputs = document.querySelectorAll(".popup__input");
 
-descriptionInput.addEventListener("input", () => {
-  checkInputValidity(descriptionInput, descriptionError);
-  saveButton.disabled = !(
-    nameInput.validity.valid && descriptionInput.validity.valid
-  );
-});
-
-newCardNameInput.addEventListener("input", () => {
-  checkInputValidity(newCardNameInput, newCardNameError);
-  saveCardButton.disabled = !(
-    newCardNameInput.validity.valid && newCardLinkInput.validity.valid
-  );
-});
-
-newCardLinkInput.addEventListener("input", () => {
-  checkInputValidity(newCardLinkInput, newCardLinkError);
-  saveCardButton.disabled = !(
-    newCardNameInput.validity.valid && newCardLinkInput.validity.valid
-  );
+//colocando os inputs em um só evento para evitar repetição de código
+allInputs.forEach((input) => {
+  input.addEventListener("input", () => {
+    checkInputValidity(nameInput, nameError);
+    saveButton.disabled = !(
+      nameInput.validity.valid && descriptionInput.validity.valid
+    );
+    checkInputValidity(descriptionInput, descriptionError);
+    saveButton.disabled = !(
+      nameInput.validity.valid && descriptionInput.validity.valid
+    );
+    checkInputValidity(newCardNameInput, newCardNameError);
+    saveCardButton.disabled = !(
+      newCardNameInput.validity.valid && newCardLinkInput.validity.valid
+    );
+    checkInputValidity(newCardLinkInput, newCardLinkError);
+    saveCardButton.disabled = !(
+      newCardNameInput.validity.valid && newCardLinkInput.validity.valid
+    );
+  });
 });
 
 function fillProfileForm(profileData) {
@@ -109,7 +105,7 @@ function handleOpenEditModal() {
     description: profileDescription.textContent,
   };
   fillProfileForm(profileData);
-  resetProfileFormErrors();
+  resetErrors();
   openPopup.classList.add("popup_is-opened");
 }
 
@@ -148,7 +144,7 @@ openEditButton.addEventListener("click", handleOpenEditModal);
 
 closePopup.addEventListener("click", () => {
   openPopup.classList.remove("popup_is-opened");
-  resetProfileFormErrors();
+  resetErrors();
 });
 
 closeImg.addEventListener("click", () => {
@@ -160,8 +156,7 @@ popups.forEach((popup) => {
     if (event.target === popup) {
       popup.classList.remove("popup_is-opened");
       addCardForm.reset();
-      resetFormErrors();
-      resetProfileFormErrors();
+     resetErrors();
     }
   });
 });
@@ -172,17 +167,28 @@ document.addEventListener("keydown", (event) => {
     if (openedPopup) {
       openedPopup.classList.remove("popup_is-opened");
       addCardForm.reset();
-      resetFormErrors();
-      resetProfileFormErrors();
+     resetErrors();
     }
   }
 });
-function resetFormErrors() {
+
+function resetErrors() {
+  nameError.textContent = "";
+  descriptionError.textContent = "";
+  newCardNameError.textContent = "";
+  newCardLinkError.textContent = "";
+  nameInput.classList.remove("popup__input_error");
+  descriptionInput.classList.remove("popup__input_error");
+  newCardNameInput.classList.remove("popup__input_error");
+  newCardLinkInput.classList.remove("popup__input_error");
+  saveButton.disabled = true;
+  saveCardButton.disabled = true;
+}
+/*function resetFormErrors() {
   newCardNameError.textContent = "";
   newCardLinkError.textContent = "";
   newCardNameInput.classList.remove("popup__input_error");
   newCardLinkInput.classList.remove("popup__input_error");
-  saveCardButton.disabled = true;
 }
 
 function resetProfileFormErrors() {
@@ -194,6 +200,7 @@ function resetProfileFormErrors() {
     nameInput.validity.valid && descriptionInput.validity.valid
   );
 }
+  */
 
 function getCardElement(
   name = "Lugar sem nome",
@@ -248,7 +255,7 @@ openAddButton.addEventListener("click", () => {
 closeAddPopup.addEventListener("click", () => {
   openAddPopup.classList.remove("popup_is-opened");
   addCardForm.reset();
-  resetFormErrors();
+ resetErrors();
 });
 
 function handleCardFormSubmit(event) {
@@ -259,7 +266,7 @@ function handleCardFormSubmit(event) {
   renderCard(nameCard.value, linkCard.value, cardsList);
   openAddPopup.classList.remove("popup_is-opened");
   addCardForm.reset();
-  resetFormErrors();
+ resetErrors();
 }
 
 addCardForm.addEventListener("submit", handleCardFormSubmit);
