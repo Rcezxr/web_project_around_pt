@@ -1,3 +1,5 @@
+import { Card } from "./card.js";
+
 const initialCards = [
   {
     name: "Vale de Yosemite",
@@ -156,7 +158,7 @@ popups.forEach((popup) => {
     if (event.target === popup) {
       popup.classList.remove("popup_is-opened");
       addCardForm.reset();
-     resetErrors();
+      resetErrors();
     }
   });
 });
@@ -167,7 +169,7 @@ document.addEventListener("keydown", (event) => {
     if (openedPopup) {
       openedPopup.classList.remove("popup_is-opened");
       addCardForm.reset();
-     resetErrors();
+      resetErrors();
     }
   }
 });
@@ -200,7 +202,7 @@ function resetProfileFormErrors() {
     nameInput.validity.valid && descriptionInput.validity.valid
   );
 }
-  */
+  
 
 function getCardElement(
   name = "Lugar sem nome",
@@ -236,10 +238,23 @@ function getCardElement(
 
   return cardElement;
 }
+  */
 
 function renderCard(name, link, container) {
-  const cardElement = getCardElement(name, link, container);
-  container.prepend(cardElement);
+  /*const cardElement = getCardElement(name, link, container);*/
+  const cardElement = new Card(
+    name,
+    link,
+    "#card__template",
+    (cardName, cardLink) => {
+      popupCaption.textContent = cardName;
+      popupImg.src = cardLink;
+      popupImg.alt = cardName;
+      openImg.classList.add("popup_is-opened");
+    },
+  );
+  const cardElementGenerated = cardElement.generateCard();
+  container.prepend(cardElementGenerated);
   return cardElement;
 }
 
@@ -255,7 +270,7 @@ openAddButton.addEventListener("click", () => {
 closeAddPopup.addEventListener("click", () => {
   openAddPopup.classList.remove("popup_is-opened");
   addCardForm.reset();
- resetErrors();
+  resetErrors();
 });
 
 function handleCardFormSubmit(event) {
@@ -266,7 +281,7 @@ function handleCardFormSubmit(event) {
   renderCard(nameCard.value, linkCard.value, cardsList);
   openAddPopup.classList.remove("popup_is-opened");
   addCardForm.reset();
- resetErrors();
+  resetErrors();
 }
 
 addCardForm.addEventListener("submit", handleCardFormSubmit);
