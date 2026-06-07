@@ -3,7 +3,6 @@ export class Card {
     this._name = name;
     this._link = link;
     this._templateSelector = templateSelector;
-    console.log(this._templateSelector);
     this._template = document.querySelector(this._templateSelector).content;
     this._handleImageClick = handleImageClick;
   }
