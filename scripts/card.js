@@ -1,10 +1,12 @@
 export class Card {
-  constructor(name, link, templateSelector, handleImageClick) {
+  constructor(name, link, templateSelector, handleImageClick, id, isLiked) {
     this._name = name;
     this._link = link;
     this._templateSelector = templateSelector;
     this._template = document.querySelector(this._templateSelector).content;
     this._handleImageClick = handleImageClick;
+    this._id = id;
+    this._isLiked = isLiked;
   }
   _getCardElement() {
     const cardElement = this._template.querySelector(".card").cloneNode(true);

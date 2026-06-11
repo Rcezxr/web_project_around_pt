@@ -4,34 +4,15 @@ import { Section } from "./Section.js";
 import { PopupWithImage } from "./PopupWithImage.js";
 import { PopupWithForm } from "./PopupWithForm.js";
 import { UserInfo } from "./UserInfo.js";
+import { Api } from "./api.js";
 
-const initialCards = [
-  {
-    name: "Vale de Yosemite",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_yosemite.jpg",
+const api = new Api({
+  baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
+  headers: {
+    authorization: "f4d7091e-146c-4f2d-89dc-1be6bf4e0697",
+    "Content-Type": "application/json",
   },
-  {
-    name: "Lago Louise",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lake-louise.jpg",
-  },
-  {
-    name: "Montanhas Carecas",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_bald-mountains.jpg",
-  },
-  {
-    name: "Latemar",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_latemar.jpg",
-  },
-  {
-    name: "Parque Nacional da Vanoise",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_vanoise.jpg",
-  },
-  {
-    name: "Lago di Braies",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
-  },
-];
-
+});
 // Seletores gerais
 const cardsList = document.querySelector(".cards__list");
 const openEditButton = document.querySelector(".profile__edit-button");
@@ -65,20 +46,27 @@ popupWithImage.setEventListeners();
 
 // --- PopupWithForm de edição de perfil ---
 const popupWithEditForm = new PopupWithForm("#edit-popup", (inputValues) => {
-  userInfo.setUserInfo({
-    name: inputValues.name,
-    about: inputValues.description,
-  });
-  popupWithEditForm.close();
+  api
+    .editProfile(inputValues.name, inputValues.description)
+    .then((user) => {
+      userInfo.setUserInfo({ name: user.name, about: user.about });
+      popupWithEditForm.close();
+    })
+    .catch((err) => console.log(err));
 });
 popupWithEditForm.setEventListeners();
 
 // --- PopupWithForm de nova carta ---
 const popupWithAddForm = new PopupWithForm("#new-card-popup", (inputValues) => {
-  section.addItem(createCard(inputValues.name, inputValues.link));
-  popupWithAddForm.close();
-  addCardForm.reset();
-  addCardFormValidator.resetValidation();
+  api
+    .addCard(inputValues.name, inputValues.link)
+    .then((card) => {
+      section.addItem(createCard(card.name, card.link));
+      popupWithAddForm.close();
+      addCardForm.reset();
+      addCardFormValidator.resetValidation();
+    })
+    .catch((err) => console.log(err));
 });
 popupWithAddForm.setEventListeners();
 
@@ -90,17 +78,25 @@ function createCard(name, link) {
   return card.generateCard();
 }
 
-// --- Section ---
-const section = new Section(
-  {
-    items: initialCards,
-    renderer: (card) => {
-      section.addItem(createCard(card.name, card.link));
-    },
-  },
-  ".cards__list",
-);
-section.renderItems();
+let section;
+
+api
+  .getAllData()
+  .then(([user, cards]) => {
+    userInfo.setUserInfo({ name: user.name, about: user.about });
+
+    section = new Section(
+      {
+        items: cards,
+        renderer: (card) => {
+          section.addItem(createCard(card.name, card.link));
+        },
+      },
+      ".cards__list",
+    );
+    section.renderItems();
+  })
+  .catch((err) => console.log(err));
 
 // --- Botões de abrir popup ---
 openEditButton.addEventListener("click", () => {
