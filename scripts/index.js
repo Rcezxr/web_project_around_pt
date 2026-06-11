@@ -5,11 +5,12 @@ import { PopupWithImage } from "./PopupWithImage.js";
 import { PopupWithForm } from "./PopupWithForm.js";
 import { UserInfo } from "./UserInfo.js";
 import { Api } from "./api.js";
+import { PopupWithConfirmation } from "./popupWithConfirmation.js";
 
 const api = new Api({
   baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
   headers: {
-    authorization: "f4d7091e-146c-4f2d-89dc-1be6bf4e0697",
+    authorization: "cda2d22c-92d8-4e97-a00b-bc65268fa00c",
     "Content-Type": "application/json",
   },
 });
@@ -44,6 +45,10 @@ const userInfo = new UserInfo({
 const popupWithImage = new PopupWithImage("#image-popup");
 popupWithImage.setEventListeners();
 
+// --- PopupWithConfirmation ---
+const popupWithConfirmation = new PopupWithConfirmation("#confirmation-popup");
+popupWithConfirmation.setEventListeners();
+
 // --- PopupWithForm de edição de perfil ---
 const popupWithEditForm = new PopupWithForm("#edit-popup", (inputValues) => {
   api
@@ -59,9 +64,9 @@ popupWithEditForm.setEventListeners();
 // --- PopupWithForm de nova carta ---
 const popupWithAddForm = new PopupWithForm("#new-card-popup", (inputValues) => {
   api
-    .addCard(inputValues.name, inputValues.link)
+    .addCard(inputValues["place-name"], inputValues.link)
     .then((card) => {
-      section.addItem(createCard(card.name, card.link));
+      section.addItem(createCard(card.name, card.link, card._id, card.isLiked));
       popupWithAddForm.close();
       addCardForm.reset();
       addCardFormValidator.resetValidation();
@@ -71,10 +76,29 @@ const popupWithAddForm = new PopupWithForm("#new-card-popup", (inputValues) => {
 popupWithAddForm.setEventListeners();
 
 // --- Card ---
-function createCard(name, link) {
-  const card = new Card(name, link, "#card__template", (cardName, cardLink) => {
-    popupWithImage.open(cardLink, cardName);
-  });
+function createCard(name, link, id, isLiked) {
+  console.log("id:", id);
+  const card = new Card(
+    name,
+    link,
+    "#card__template",
+    (cardName, cardLink) => {
+      popupWithImage.open(cardLink, cardName);
+    },
+    id,
+    isLiked,
+    (cardId) => {
+      popupWithConfirmation.open(() => {
+        api
+          .deleteCard(cardId)
+          .then(() => {
+            card.deleteCard();
+            popupWithConfirmation.close();
+          })
+          .catch((err) => console.log(err));
+      });
+    },
+  );
   return card.generateCard();
 }
 
@@ -83,13 +107,17 @@ let section;
 api
   .getAllData()
   .then(([user, cards]) => {
+    console.log("user:", user);
+    console.log("cards:", cards);
     userInfo.setUserInfo({ name: user.name, about: user.about });
 
     section = new Section(
       {
         items: cards,
         renderer: (card) => {
-          section.addItem(createCard(card.name, card.link));
+          section.addItem(
+            createCard(card.name, card.link, card._id, card.isLiked),
+          );
         },
       },
       ".cards__list",

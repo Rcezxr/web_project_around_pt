@@ -1,11 +1,20 @@
 export class Card {
-  constructor(name, link, templateSelector, handleImageClick, id, isLiked) {
+  constructor(
+    name,
+    link,
+    templateSelector,
+    handleImageClick,
+    id,
+    isLiked,
+    handleDelete,
+  ) {
     this._name = name;
     this._link = link;
     this._templateSelector = templateSelector;
     this._template = document.querySelector(this._templateSelector).content;
     this._handleImageClick = handleImageClick;
     this._id = id;
+    this._handleDelete = handleDelete;
     this._isLiked = isLiked;
   }
   _getCardElement() {
@@ -22,6 +31,13 @@ export class Card {
       .classList.toggle("card__like-button_is-active");
   }
   _deleteCard() {
+    console.log("this._id no momento do clique:", this._id);
+    console.log("this._id:", this._id);
+    console.log("this._handleDelete:", this._handleDelete);
+    this._handleDelete(this._id);
+  }
+
+  deleteCard() {
     this._cardElement.remove();
   }
 

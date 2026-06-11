@@ -135,6 +135,10 @@
   margin: 0;
 }
 
+.popup__content_type_delete {
+  min-height: 180px;
+}
+
 @media screen and (max-width: 544px) {
   .popup {
     bottom: 112px;
