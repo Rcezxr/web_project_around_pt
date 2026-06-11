@@ -1,25 +1,34 @@
 # Projeto | Around the U.S.
 
-Aplicação desenvolvida utilizando HTML para estrutura e semântica, CSS para estilização e responsividade, JavaScript para implementação de interatividade e ações dinâmicas e formularios.
+Aplicação desenvolvida utilizando HTML, CSS e JavaScript, conectada a uma API REST para persistência de dados.
 
 ## Tecnologias utilizadas
 
 - HTML
 - CSS
-- JavaScript
+- JavaScript (ES6+)
+- API REST (Fetch API)
+- Programação Orientada a Objetos
 
 ## Funcionalidades
 
 - Layout responsivo
-- Estrutura semântica
-- Interface baseada no protótipo do Figma
-- Interatividade com JavaScript
+- Carregamento de cards e perfil do servidor
+- Adicionar e excluir cards
+- Curtir e descurtir cards
+- Editar informações do perfil
+- Atualizar foto do perfil
+- Validação de formulários
+- Popup de confirmação de exclusão
 
 ## Como visualizar
 
-1. Baixe ou clone o repositório
+1. Clone o repositório
 2. Abra o arquivo `index.html` no navegador
-3. Certifique-se de que o arquivo script.js (ou nome do seu arquivo JS) está na mesma pasta ou corretamente linkado no index.html para que as funcionalidades JavaScript funcionem.
+
+## Link do projeto
+
+[GitHub Pages](https://rcezxr.github.io/web_project_around_pt/)
 
 ## Autor
 
