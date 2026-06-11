@@ -28,7 +28,7 @@ Aplicação desenvolvida utilizando HTML, CSS e JavaScript, conectada a uma API 
 
 ## Link do projeto
 
-[GitHub Pages](https://rcezxr.github.io/web_project_around_pt/)
+[GitHub Pages](https://github.com/Rcezxr/web_project_around_pt)
 
 ## Autor
 
