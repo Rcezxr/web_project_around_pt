@@ -19,7 +19,13 @@
       </header>
       <main class="content">
         <section class="profile page__section">
+        <div class="profile__avatar-container">
           <img class="profile__image" src="./images/avatar.jpg" alt="Avatar" />
+          <button
+            class="profile__avatar-edit"
+            type="button"
+          ></button>
+        </div>
           <div class="profile__info">
             <h1 class="profile__title">Jacques Cousteau</h1>
             <button
@@ -156,6 +162,30 @@
           <button class="button popup__button" type="submit">Sim</button>
       </div>
     </div>
+    <div class="popup" id="avatar-popup">
+  <div class="popup__content">
+    <button
+      aria-label="Fechar pop-up"
+      class="popup__close"
+      type="button"
+    ></button>
+    <h3 class="popup__title">Atualizar foto</h3>
+    <form class="popup__form" id="avatar-form">
+      <input
+        class="popup__input"
+        name="avatar"
+        placeholder="Link da foto"
+        required
+        type="url"
+        id="avatar"
+      />
+      <span class="popup__error" id="avatar-error"></span>
+      <button class="button popup__button" type="submit" disabled>
+        Salvar
+      </button>
+    </form>
+  </div>
+</div>
     <script src="./scripts/index.js" type="module"></script>
   </body>
 </html>

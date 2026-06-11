@@ -31,6 +31,7 @@ const addCardForm = document.querySelector("#new-card-form");
 
 const profileFormValidator = new FormValidator(validationConfig, profileForm);
 const addCardFormValidator = new FormValidator(validationConfig, addCardForm);
+const openAvatarButton = document.querySelector(".profile__avatar-edit");
 
 profileFormValidator.setEventListeners();
 addCardFormValidator.setEventListeners();
@@ -51,33 +52,65 @@ popupWithConfirmation.setEventListeners();
 
 // --- PopupWithForm de edição de perfil ---
 const popupWithEditForm = new PopupWithForm("#edit-popup", (inputValues) => {
+  popupWithEditForm.renderLoading(true);
   api
     .editProfile(inputValues.name, inputValues.description)
     .then((user) => {
       userInfo.setUserInfo({ name: user.name, about: user.about });
       popupWithEditForm.close();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err))
+    .finally(() => popupWithEditForm.renderLoading(false));
 });
+
 popupWithEditForm.setEventListeners();
+const avatarForm = document.querySelector("#avatar-form");
+const avatarFormValidator = new FormValidator(validationConfig, avatarForm);
+avatarFormValidator.setEventListeners();
+
+const popupWithAvatarForm = new PopupWithForm(
+  "#avatar-popup",
+  (inputValues) => {
+    popupWithAvatarForm.renderLoading(true);
+    api
+      .updateAvatar(inputValues.avatar)
+      .then((user) => {
+        document.querySelector(".profile__image").src = user.avatar;
+        popupWithAvatarForm.close();
+      })
+      .catch((err) => console.log(err))
+      .finally(() => popupWithAvatarForm.renderLoading(false));
+  },
+);
+popupWithAvatarForm.setEventListeners();
 
 // --- PopupWithForm de nova carta ---
 const popupWithAddForm = new PopupWithForm("#new-card-popup", (inputValues) => {
+  popupWithAddForm.renderLoading(true);
   api
     .addCard(inputValues["place-name"], inputValues.link)
     .then((card) => {
-      section.addItem(createCard(card.name, card.link, card._id, card.isLiked));
+      section.addItem(
+        createCard(
+          card.name,
+          card.link,
+          card._id,
+          card.isLiked,
+          card.owner,
+          card.owner,
+        ),
+      );
       popupWithAddForm.close();
       addCardForm.reset();
       addCardFormValidator.resetValidation();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err))
+    .finally(() => popupWithAddForm.renderLoading(false));
 });
 popupWithAddForm.setEventListeners();
 
 // --- Card ---
-function createCard(name, link, id, isLiked) {
-  console.log("id:", id);
+function createCard(name, link, id, isLiked, owner, userId) {
   const card = new Card(
     name,
     link,
@@ -98,7 +131,20 @@ function createCard(name, link, id, isLiked) {
           .catch((err) => console.log(err));
       });
     },
+    (isLiked, cardId) => {
+      const likeMethod = isLiked ? api.unlikeCard : api.likeCard;
+      likeMethod
+        .call(api, cardId)
+        .then((updatedCard) => {
+          card.setLike(updatedCard.isLiked);
+        })
+        .catch((err) => console.log(err));
+    },
   );
+  if (owner !== userId) {
+    // ← adicione aqui
+    card.hideDeleteButton();
+  }
   return card.generateCard();
 }
 
@@ -107,16 +153,21 @@ let section;
 api
   .getAllData()
   .then(([user, cards]) => {
-    console.log("user:", user);
-    console.log("cards:", cards);
     userInfo.setUserInfo({ name: user.name, about: user.about });
-
+    document.querySelector(".profile__image").src = user.avatar;
     section = new Section(
       {
         items: cards,
         renderer: (card) => {
           section.addItem(
-            createCard(card.name, card.link, card._id, card.isLiked),
+            createCard(
+              card.name,
+              card.link,
+              card._id,
+              card.isLiked,
+              card.owner,
+              user._id,
+            ),
           );
         },
       },
@@ -141,4 +192,8 @@ openAddButton.addEventListener("click", () => {
   addCardForm.reset();
   addCardFormValidator.resetValidation();
   popupWithAddForm.open();
+});
+openAvatarButton.addEventListener("click", () => {
+  avatarFormValidator.resetValidation();
+  popupWithAvatarForm.open();
 });
